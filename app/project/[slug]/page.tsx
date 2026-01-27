@@ -4,13 +4,27 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Calendar, Tag, Users, MapPin } from 'lucide-react'
 
-interface ProjectPageProps {
-  params: {
-    slug: string
-  }
+type Project = {
+  title: string
+  year: string
+  category: string
+  location: string
+  participants: string
+  description: string
+  fullDescription: string
+  objectives: string[]
+  results: string[]
+  images: string[]
+  partners: string[]
 }
 
-const projects = {
+interface ProjectPageProps {
+  params: Promise<{
+    slug: string
+  }>
+}
+
+const projects: Record<string, Project> = {
   'lights-camera-action': {
     title: 'Lights, Camera, Action',
     year: '2022',
@@ -462,7 +476,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
-  const project = projects[params.slug]
+  const { slug } = await params
+  const project = projects[slug]
   
   if (!project) {
     return {
@@ -474,12 +489,12 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     title: `${project.title} | Ксанаду Арт - Охрид, Македонија`,
     description: project.description,
     alternates: {
-      canonical: `https://xanaduart.mk/project/${params.slug}/`,
+      canonical: `https://xanaduart.mk/project/${slug}/`,
     },
     openGraph: {
       title: `${project.title} | Ксанаду Арт`,
       description: project.description,
-      url: `https://xanaduart.mk/project/${params.slug}/`,
+      url: `https://xanaduart.mk/project/${slug}/`,
       images: [
         {
           url: `https://xanaduart.mk${project.images[0]}`,
@@ -490,8 +505,9 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   }
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = projects[params.slug]
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { slug } = await params
+  const project = projects[slug]
   
   if (!project) {
     notFound()

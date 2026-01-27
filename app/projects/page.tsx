@@ -16,7 +16,15 @@ export const metadata: Metadata = {
   },
 }
 
-const projectsByYear = {
+type ProjectCard = {
+  slug: string
+  title: string
+  category: string
+  description: string
+  image: string
+}
+
+const projectsByYear: Record<number, ProjectCard[]> = {
   2024: [
     {
       slug: 'cultural-horizons',
