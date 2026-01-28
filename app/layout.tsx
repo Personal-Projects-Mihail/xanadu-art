@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import '../styles/globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import LocaleShell from '@/components/LocaleShell'
 
 export const metadata: Metadata = {
   title: 'Ксанаду Арт | Уметничка НВО - Охрид, Македонија',
@@ -60,14 +59,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#540863" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <a href="#main-content" className="skip-link">
-          Прескокни до главна содржина
-        </a>
-        <Header />
-        <main id="main-content" className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <LocaleShell>{children}</LocaleShell>
       </body>
     </html>
   )

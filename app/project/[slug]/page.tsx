@@ -3,20 +3,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Calendar, Tag, Users, MapPin } from 'lucide-react'
-
-type Project = {
-  title: string
-  year: string
-  category: string
-  location: string
-  participants: string
-  description: string
-  fullDescription: string
-  objectives: string[]
-  results: string[]
-  images: string[]
-  partners: string[]
-}
+import { getProjectBySlug, getProjectSlugs } from '@/app/_content/projects'
+import path from 'node:path'
+import { access } from 'node:fs/promises'
 
 interface ProjectPageProps {
   params: Promise<{
@@ -24,460 +13,56 @@ interface ProjectPageProps {
   }>
 }
 
-const projects: Record<string, Project> = {
-  'lights-camera-action': {
-    title: 'Lights, Camera, Action',
-    year: '2022',
-    category: 'Еразмус+',
-    location: 'Охрид, Македонија',
-    participants: '40 млади од 8 земји',
-    description: `
-      Lights, Camera, Action е меѓународен проект за размена на млади финансиран од 
-      програмата Еразмус+ на Европската Унија. Проектот собра 40 млади луѓе од 8 
-      различни земји заедно во Охрид, Македонија, за да истражуваат теми поврзани со 
-      филмската уметност и медиумската писменост.
-    `,
-    fullDescription: `
-      Во текот на десетдневната размена, учесниците имаа можност да учат од искусни 
-      филмски работници и медиумски експерти, да создаваат свои кратки филмови и 
-      да развијат вештини за критичко размислување за медиумите.
-      
-      Проектот вклучуваше работилници за снимање, монтажа, сценарио и режија, како 
-      и сесии за дискусија за улогата на медиумите во современото општество.
-      
-      Учесниците работеа во мултинационални тимови, што им овозможи не само да ги 
-      развијат своите технички вештини, туку и да градат меѓукултурни пријателства 
-      и да го подобрат своето разбирање за различните култури.
-    `,
-    objectives: [
-      'Да се развијат медиумски вештини кај младите',
-      'Да се промовира критичкото размислување за медиумите',
-      'Да се фасилитира меѓукултурен дијалог',
-      'Да се поттикне креативното изразување преку филм',
-      'Да се изградат трајни партнерства меѓу организациите',
-    ],
-    results: [
-      'Снимени 8 кратки филмови од учесниците',
-      'Организирана јавна проекција во Охрид',
-      'Создадена онлајн платформа за споделување на филмовите',
-      'Установени партнерства со 8 организации од Европа',
-    ],
-    images: [
-      '/images/project-lights-camera-action-1.jpg',
-      '/images/project-lights-camera-action-2.jpg',
-      '/images/project-lights-camera-action-3.jpg',
-    ],
-    partners: ['Erasmus+', 'European Union', '8 partner organizations'],
-  },
-  'ohrid-youth-orchestra': {
-    title: 'Охридски младински оркестар',
-    year: '2023',
-    category: 'Музика',
-    location: 'Охрид, Македонија',
-    participants: '60 млади музичари',
-    description: `
-      Охридскиот младински оркестар е програма која обединува млади музичари од 
-      Охрид и регионот за заеднички концерти и перформанси на високо ниво.
-    `,
-    fullDescription: `
-      Охридскиот младински оркестар претставува амбициозен проект кој има за цел 
-      да ги собере најталентираните млади музичари од регионот и да им овозможи 
-      професионално оркестарско искуство.
-      
-      Оркестарот работи под менторство на искусни диригенти и музичари, со фокус 
-      на класична музика, но исто така вклучува и аранжмани на популарна и 
-      традиционална музика.
-      
-      Во текот на годината, оркестарот одржа повеќе концерти во Охрид и други 
-      градови во Македонија, вклучувајќи го и традиционалниот новогодишен концерт.
-    `,
-    objectives: [
-      'Да се развијат оркестарски вештини кај младите музичари',
-      'Да се промовира класичната музика меѓу младите',
-      'Да се создаде платформа за соработка меѓу музичарите',
-      'Да се збогати културниот живот во Охрид',
-    ],
-    results: [
-      'Организирани 5 јавни концерти',
-      'Учество на 60 млади музичари',
-      'Изведени дела од Бах, Моцарт, Бетовен и македонски композитори',
-      'Соработка со гости-музичари од странство',
-    ],
-    images: [
-      '/images/project-orchestra-1.jpg',
-      '/images/project-orchestra-2.jpg',
-      '/images/project-orchestra-3.jpg',
-    ],
-    partners: ['Општина Охрид', 'Музичко училиште Охрид'],
-  },
-  'theatrical-innovations': {
-    title: 'Театарски иновации',
-    year: '2023',
-    category: 'Театар',
-    location: 'Охрид, Македонија',
-    participants: '25 млади глумци',
-    description: `
-      Театарски иновации е интензивна работилница за современи театарски техники 
-      и експериментални форми на изведба.
-    `,
-    fullDescription: `
-      Работилницата Театарски иновации беше дизајнирана за млади глумци и 
-      театарски ентузијасти кои сакаат да ги прошират своите хоризонти и да 
-      експериментираат со нови форми на театарски израз.
-      
-      Во текот на месец дена, учесниците работеа со искусни театарски работници 
-      кои ги запознаа со техники како физички театар, импровизација, форум театар 
-      и кореографија за глумци.
-      
-      Работилницата заврши со јавна изведба која ги комбинираше сите научени 
-      техники во една иновативна театарска продукција.
-    `,
-    objectives: [
-      'Да се запознаат младите со современи театарски техники',
-      'Да се поттикне експериментирање со формата',
-      'Да се развијат сценски вештини',
-      'Да се создаде нова театарска продукција',
-    ],
-    results: [
-      '25 млади глумци обучени во современи техники',
-      'Создадена оригинална театарска претстава',
-      '3 јавни изведби во Охрид',
-      'Публика од над 300 гледачи',
-    ],
-    images: [
-      '/images/project-theater-1.jpg',
-      '/images/project-theater-2.jpg',
-      '/images/project-theater-3.jpg',
-    ],
-    partners: ['Народен театар Охрид'],
-  },
-  'cultural-horizons': {
-    title: 'Културни хоризонти',
-    year: '2024',
-    category: 'Културен настан',
-    location: 'Охрид, Македонија',
-    participants: '200+ посетители',
-    description: `
-      Културни хоризонти е серија на културни настани кои ги прикажуваат 
-      традиционалните и современите уметнички форми од регионот.
-    `,
-    fullDescription: `
-      Културни хоризонти претставува амбициозен проект кој има за цел да го 
-      збогати културниот живот во Охрид и да ги прикаже различните уметнички 
-      форми кои се присутни во регионот.
-      
-      Серијата вклучува изложби на ликовна уметност, концерти на традиционална 
-      и современа музика, театарски перформанси и работилници за јавноста.
-      
-      Проектот ги поврзува уметниците од различни генерации и дисциплини, 
-      создавајќи простор за дијалог и соработка.
-    `,
-    objectives: [
-      'Да се промовира културното наследство на регионот',
-      'Да се поддржат локалните уметници',
-      'Да се збогати културниот живот во Охрид',
-      'Да се создаде дијалог меѓу генерациите',
-    ],
-    results: [
-      'Организирани 10 културни настани',
-      'Учество на 30+ уметници',
-      'Посетеност од над 200 луѓе',
-      'Медиумска покриеност во локалните медиуми',
-    ],
-    images: [
-      '/images/project-cultural-horizons-1.jpg',
-      '/images/project-cultural-horizons-2.jpg',
-      '/images/project-cultural-horizons-3.jpg',
-    ],
-    partners: ['Општина Охрид', 'Културно наследство Охрид'],
-  },
-  'youth-voices': {
-    title: 'Гласови на младите',
-    year: '2024',
-    category: 'Театарска работилница',
-    location: 'Охрид, Македонија',
-    participants: '20 млади глумци',
-    description: `
-      Интензивна театарска работилница фокусирана на развивање на гласовни 
-      техники и сценско присуство.
-    `,
-    fullDescription: `
-      Гласови на младите е специјализирана работилница посветена на развивање 
-      на гласовните вештини и сценското присуство кај младите глумци.
-      
-      Под менторство на искусни глумци и вокални coaches, учесниците работеа 
-      на техники за дијафрагмално дишење, артикулација, проекција на гласот и 
-      емоционална експресија преку гласот.
-      
-      Работилницата вклучуваше и сесии за текстуална анализа и интерпретација, 
-      со фокус на современа драматургија.
-    `,
-    objectives: [
-      'Да се развијат гласовни техники',
-      'Да се подобри сценското присуство',
-      'Да се изгради самодоверба кај младите глумци',
-      'Да се создаде нова театарска продукција',
-    ],
-    results: [
-      '20 млади глумци обучени',
-      'Развиени вештини за гласовна техника',
-      'Завршна јавна изведба',
-      'Видео записи на перформансите',
-    ],
-    images: [
-      '/images/project-youth-voices-1.jpg',
-      '/images/project-youth-voices-2.jpg',
-      '/images/project-youth-voices-3.jpg',
-    ],
-    partners: ['Народен театар Охрид'],
-  },
-  'art-bridges': {
-    title: 'Уметнички мостови',
-    year: '2023',
-    category: 'Меѓународна соработка',
-    location: 'Охрид, Македонија',
-    participants: '30 млади уметници од 3 земји',
-    description: `
-      Проект за поврзување на млади уметници од Македонија и соседните земји 
-      преку заеднички креативни активности.
-    `,
-    fullDescription: `
-      Уметнички мостови е проект кој ги поврзува младите уметници од Македонија, 
-      Србија и Албанија за заедничка креативна работа и размена на искуства.
-      
-      Проектот вклучуваше резиденција во Охрид каде уметниците работеа заедно 
-      на интердисциплинарни проекти кои ги комбинираа театарот, музиката и 
-      ликовната уметност.
-      
-      Резултатот беше серија на перформанси и изложби кои беа прикажани во 
-      сите три земји-учеснички.
-    `,
-    objectives: [
-      'Да се промовира регионална соработка',
-      'Да се развијат интердисциплинарни проекти',
-      'Да се изградат трајни врски меѓу уметниците',
-      'Да се премостат културните разлики',
-    ],
-    results: [
-      '30 млади уметници вклучени',
-      'Создадени 5 интердисциплинарни проекти',
-      'Турнеја во 3 земји',
-      'Установени партнерства со организации од регионот',
-    ],
-    images: [
-      '/images/project-art-bridges-1.jpg',
-      '/images/project-art-bridges-2.jpg',
-      '/images/project-art-bridges-3.jpg',
-    ],
-    partners: ['Partner organizations from Serbia and Albania'],
-  },
-  'dance-fusion': {
-    title: 'Танц фузија',
-    year: '2022',
-    category: 'Танц',
-    location: 'Охрид, Македонија',
-    participants: '15 танчери',
-    description: `
-      Фузија на традиционални македонски танци со современи танцови форми.
-    `,
-    fullDescription: `
-      Танц фузија е проект кој ги комбинира богатите традиционални македонски 
-      танци со современите танцови форми за создавање на нешто ново и уникатно.
-      
-      Проектот собра танчери со различни позадини - од традиционални фолклорни 
-      танчери до современи танчари - кои заедно работеа на создавање на нова 
-      кореографија.
-      
-      Резултатот беше перформанс кој ги почитува корените на македонската 
-      традиција додека истовремено ја турка уметноста напред со современи 
-      танцови техники.
-    `,
-    objectives: [
-      'Да се зачува традиционалното наследство',
-      'Да се создаде нова танцова форма',
-      'Да се поврзат традиционалните и современите танчери',
-      'Да се промовира македонската култура',
-    ],
-    results: [
-      'Создадена нова кореографија',
-      '3 јавни перформанси',
-      'Видео документација на проектот',
-      'Регионална турнеја',
-    ],
-    images: [
-      '/images/project-dance-fusion-1.jpg',
-      '/images/project-dance-fusion-2.jpg',
-      '/images/project-dance-fusion-3.jpg',
-    ],
-    partners: ['Фолклорен ансамбл Охрид'],
-  },
-  'creative-labs': {
-    title: 'Креативни лаборатории',
-    year: '2022',
-    category: 'Образование',
-    location: 'Охрид, Македонија',
-    participants: '50 млади',
-    description: `
-      Серија работилници за развивање на креативно размислување и уметнички вештини.
-    `,
-    fullDescription: `
-      Креативни лаборатории е серија од работилници дизајнирани да им помогнат 
-      на младите да ги развијат своите креативни потенцијали и уметнички вештини.
-      
-      Работилниците опфатија различни теми - од цртање и сликање, преку креативно 
-      пишување, до основи на глумата и танцот. Секоја работилница беше водена од 
-      искусен уметник или едукатор.
-      
-      Проектот имаше за цел да го направи уметничкото образование достапно за 
-      сите млади во Охрид, без разлика на нивната претходна искуство.
-    `,
-    objectives: [
-      'Да се развие креативното размислување',
-      'Да се научат основни уметнички вештини',
-      'Да се направи уметноста достапна за сите',
-      'Да се откријат нови таленти',
-    ],
-    results: [
-      'Организирани 10 работилници',
-      '50 млади учесници',
-      'Завршна изложба на создадените дела',
-      'Брошура со активности за наставници',
-    ],
-    images: [
-      '/images/project-creative-labs-1.jpg',
-      '/images/project-creative-labs-2.jpg',
-      '/images/project-creative-labs-3.jpg',
-    ],
-    partners: ['Општина Охрид', 'Образовни институции'],
-  },
-  'rising-stars': {
-    title: 'Иѕвијувајќи ѕвезди',
-    year: '2021',
-    category: 'Младинска програма',
-    location: 'Охрид, Македонија',
-    participants: '30 млади таленти',
-    description: `
-      Програма за откривање и поддршка на млади уметнички таленти од Охрид и регионот.
-    `,
-    fullDescription: `
-      Иѕвијувајќи ѕвезди е програма дизајнирана да ги идентификува и поддржи 
-      најталентираните млади уметници од Охрид и околината.
-      
-      Преку аудиции и препораки, избравме 30 млади луѓе со изразен уметнички 
-      потенцијал кои добија менторство, обука и можност да се прикажат на 
-      јавни настани.
-      
-      Програмата вклучуваше работилници, индивидуални часови со ментори и 
-      финален концерт/изложба каде учесниците ги прикажаа своите постигнувања.
-    `,
-    objectives: [
-      'Да се откријат млади таленти',
-      'Да се обезбеди менторство',
-      'Да се создадат можности за прикажување',
-      'Да се изгради самодоверба',
-    ],
-    results: [
-      '30 млади таленти идентификувани',
-      '100+ часови менторство',
-      'Финален концерт со 200+ гледачи',
-      'Неколку учесници продолжија со уметничка кариера',
-    ],
-    images: [
-      '/images/project-rising-stars-1.jpg',
-      '/images/project-rising-stars-2.jpg',
-      '/images/project-rising-stars-3.jpg',
-    ],
-    partners: ['Музичко училиште Охрид', 'Уметничко училиште'],
-  },
-  'ohrid-summer-arts': {
-    title: 'Охридско лето на уметноста',
-    year: '2021',
-    category: 'Фестивал',
-    location: 'Охрид, Македонија',
-    participants: '500+ посетители',
-    description: `
-      Летен фестивал на уметноста со изложби, перформанси и работилници.
-    `,
-    fullDescription: `
-      Охридско лето на уметноста е фестивал кој го одбележа крајот на летото со 
-      серија на уметнички настани низ градот.
-      
-      Фестивалот вклучуваше изложби на ликовна уметност во јавни простори, 
-      улични перформанси, концерти на отворено и работилници за јавноста.
-      
-      Целта беше да се направи уметноста достапна за сите жители и посетители 
-      на Охрид и да се збогати културниот живот во градот.
-    `,
-    objectives: [
-      'Да се збогати културниот живот во Охрид',
-      'Да се направи уметноста достапна за сите',
-      'Да се промовираат локалните уметници',
-      'Да се привлечат туристи',
-    ],
-    results: [
-      'Организирани 15 настани',
-      'Посетеност од 500+ луѓе',
-      'Учество на 40+ уметници',
-      'Медиумска покриеност',
-    ],
-    images: [
-      '/images/project-summer-arts-1.jpg',
-      '/images/project-summer-arts-2.jpg',
-      '/images/project-summer-arts-3.jpg',
-    ],
-    partners: ['Општина Охрид', 'Туристичка организација'],
-  },
-  'foundation': {
-    title: 'Основање на Ксанаду Арт',
-    year: '2020',
-    category: 'Организација',
-    location: 'Охрид, Македонија',
-    participants: '5 основачи',
-    description: `
-      Основање на организацијата и првите чекори во градење на уметничка заедница.
-    `,
-    fullDescription: `
-      Ксанаду Арт беше основана во 2020 година од група од пет ентузијасти кои 
-      споделуваа заедничка визија за создавање простор за младите да се изразуваат 
-      преку уметноста.
-      
-      Иако почетокот беше предизвикувачки поради пандемијата, успеавме да 
-      воспоставиме основите на организацијата и да ги започнеме првите активности 
-      онлајн и со мали групи.
-      
-      Овој период ни овозможи да ја дефинираме нашата мисија и визија и да 
-      воспоставиме контакти со идните партнери.
-    `,
-    objectives: [
-      'Да се воспостави организацијата',
-      'Да се дефинира мисијата и визијата',
-      'Да се изградат партнерства',
-      'Да се започнат првите активности',
-    ],
-    results: [
-      'Регистрирана организација',
-      'Изградена основна структура',
-      'Установени први партнерства',
-      'Организирани онлајн активности',
-    ],
-    images: [
-      '/images/project-foundation-1.jpg',
-      '/images/project-foundation-2.jpg',
-      '/images/project-foundation-3.jpg',
-    ],
-    partners: ['Локални уметници', 'Волонтери'],
-  },
+async function fileExists(absPath: string): Promise<boolean> {
+  try {
+    await access(absPath)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function getProjectImagesFromPublic(slug: string): Promise<{ cover?: string; gallery: string[] }> {
+  // Support both:
+  // - public/<slug>/cover.jpg, 01.jpg..06.jpg (current convention used in repo)
+  // - public/projects/<slug>/... (older convention)
+  const candidateDirs = [slug, path.posix.join('projects', slug)]
+
+  for (const relDir of candidateDirs) {
+    const fsDir = path.join(process.cwd(), 'public', relDir)
+
+    const coverFsPath = path.join(fsDir, 'cover.jpg')
+    const coverExists = await fileExists(coverFsPath)
+
+    const galleryChecks = await Promise.all(
+      Array.from({ length: 6 }, (_, i) => {
+        const fileName = `${String(i + 1).padStart(2, '0')}.jpg`
+        const fsPath = path.join(fsDir, fileName)
+        return fileExists(fsPath).then((exists) => (exists ? `/${relDir}/${fileName}` : null))
+      }),
+    )
+
+    const gallery = galleryChecks.filter(Boolean) as string[]
+
+    if (coverExists || gallery.length > 0) {
+      return {
+        cover: coverExists ? `/${relDir}/cover.jpg` : undefined,
+        gallery,
+      }
+    }
+  }
+
+  return { cover: undefined, gallery: [] }
 }
 
 export async function generateStaticParams() {
-  return Object.keys(projects).map((slug) => ({
-    slug,
-  }))
+  const slugs = await getProjectSlugs('mk')
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params
-  const project = projects[slug]
+  const project = await getProjectBySlug(slug, 'mk')
   
   if (!project) {
     return {
@@ -485,6 +70,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     }
   }
   
+  const publicImages = await getProjectImagesFromPublic(slug)
+  const contentImages = project.images ?? []
+  const ogImage = publicImages.cover ?? contentImages[0] ?? publicImages.gallery[0]
+
   return {
     title: `${project.title} | Ксанаду Арт - Охрид, Македонија`,
     description: project.description,
@@ -495,28 +84,60 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       title: `${project.title} | Ксанаду Арт`,
       description: project.description,
       url: `https://xanaduart.mk/project/${slug}/`,
-      images: [
-        {
-          url: `https://xanaduart.mk${project.images[0]}`,
-          alt: project.title,
-        },
-      ],
+      images: ogImage
+        ? [
+            {
+              url: `https://xanaduart.mk${ogImage}`,
+              alt: project.title,
+            },
+          ]
+        : undefined,
     },
   }
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params
-  const project = projects[slug]
+  const project = await getProjectBySlug(slug, 'mk')
   
   if (!project) {
     notFound()
   }
 
+  const publicImages = await getProjectImagesFromPublic(slug)
+  const contentImages = project.images ?? []
+
+  const [contentCover, c01, c02, c03, c04, c05, c06] = contentImages
+  const [p01, p02, p03, p04, p05, p06] = publicImages.gallery
+
+  const coverImage = publicImages.cover ?? contentCover
+  const img01 = p01 ?? c01
+  const img02 = p02 ?? c02
+  const img03 = p03 ?? c03
+  const img04 = p04 ?? c04
+  const img05 = p05 ?? c05
+  const img06 = p06 ?? c06
+
+  const images12 = [img01, img02].filter(Boolean) as string[]
+  const images34 = [img03, img04].filter(Boolean) as string[]
+  const images56 = [img05, img06].filter(Boolean) as string[]
+
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-16 lg:py-24 hero-gradient">
+      <section className="relative py-16 lg:py-24 overflow-hidden">
+        {/* Cover image background */}
+        {coverImage ? (
+          <Image
+            src={coverImage}
+            alt={`${project.title} - cover`}
+            fill
+            priority
+            className="object-cover"
+          />
+        ) : null}
+        {/* Overlays for readability */}
+        <div className="absolute inset-0 hero-gradient opacity-90" />
         <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
@@ -552,29 +173,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Gallery */}
-              <div className="grid grid-cols-2 gap-4 mb-10">
-                <div className="col-span-2 relative aspect-video rounded-2xl overflow-hidden">
-                  <Image
-                    src={project.images[0]}
-                    alt={`${project.title} - главна слика`}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-                {project.images.slice(1).map((image, index) => (
-                  <div key={index} className="relative aspect-square rounded-2xl overflow-hidden">
-                    <Image
-                      src={image}
-                      alt={`${project.title} - слика ${index + 2}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-
               {/* Description */}
               <div className="prose prose-lg max-w-none">
                 <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-4">
@@ -586,6 +184,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </p>
                 ))}
               </div>
+
+              {/* Images 01 & 02 */}
+              {images12.length > 0 ? (
+                <div className={`mt-10 grid gap-4 ${images12.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+                  {images12.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`relative rounded-2xl overflow-hidden ${images12.length > 1 ? 'aspect-video sm:aspect-square' : 'aspect-video'}`}
+                    >
+                      <Image src={src} alt={`${project.title} - слика ${idx + 1}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
               {/* Objectives */}
               <div className="mt-10">
@@ -602,6 +214,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </ul>
               </div>
 
+              {/* Images 03 & 04 */}
+              {images34.length > 0 ? (
+                <div className={`mt-10 grid gap-4 ${images34.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+                  {images34.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`relative rounded-2xl overflow-hidden ${images34.length > 1 ? 'aspect-video sm:aspect-square' : 'aspect-video'}`}
+                    >
+                      <Image src={src} alt={`${project.title} - слика ${idx + 3}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
               {/* Results */}
               <div className="mt-10">
                 <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-4">
@@ -616,6 +242,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   ))}
                 </ul>
               </div>
+
+              {/* Images 05 & 06 (if present) */}
+              {images56.length > 0 ? (
+                <div className={`mt-10 grid gap-4 ${images56.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+                  {images56.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`relative rounded-2xl overflow-hidden ${images56.length > 1 ? 'aspect-video sm:aspect-square' : 'aspect-video'}`}
+                    >
+                      <Image src={src} alt={`${project.title} - слика ${idx + 5}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             {/* Sidebar */}

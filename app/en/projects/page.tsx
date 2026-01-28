@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Calendar } from 'lucide-react'
+import { getAllProjects } from '@/app/_content/projects'
 
 export const metadata: Metadata = {
   title: 'Projects | Xanadu Art - Ohrid, Macedonia',
@@ -16,105 +17,20 @@ export const metadata: Metadata = {
   },
 }
 
-type ProjectCard = {
-  slug: string
-  title: string
-  category: string
-  description: string
-  image: string
-}
+export default async function ProjectsPageEn() {
+  const projects = await getAllProjects('en')
 
-const projectsByYear: Record<number, ProjectCard[]> = {
-  2024: [
-    {
-      slug: 'cultural-horizons',
-      title: 'Cultural Horizons',
-      category: 'Cultural Event',
-      description: 'A series of cultural events showcasing traditional and contemporary art forms from the region.',
-      image: '/images/project-cultural-horizons.jpg',
+  const projectsByYear = projects.reduce(
+    (acc, project) => {
+      const yearNum = Number(project.year)
+      if (!Number.isFinite(yearNum)) return acc
+      acc[yearNum] ||= []
+      acc[yearNum].push(project)
+      return acc
     },
-    {
-      slug: 'youth-voices',
-      title: 'Youth Voices',
-      category: 'Theater Workshop',
-      description: 'Intensive theater workshop focused on developing voice techniques and stage presence.',
-      image: '/images/project-youth-voices.jpg',
-    },
-  ],
-  2023: [
-    {
-      slug: 'ohrid-youth-orchestra',
-      title: 'Ohrid Youth Orchestra',
-      category: 'Music',
-      description: 'Orchestra program bringing together young musicians from the region for joint concerts and performances.',
-      image: '/images/project-orchestra.jpg',
-    },
-    {
-      slug: 'theatrical-innovations',
-      title: 'Theatrical Innovations',
-      category: 'Theater',
-      description: 'Workshop on contemporary theatrical techniques and experimental performance forms.',
-      image: '/images/project-theater.jpg',
-    },
-    {
-      slug: 'art-bridges',
-      title: 'Art Bridges',
-      category: 'International Collaboration',
-      description: 'Project connecting young artists from Macedonia and neighboring countries.',
-      image: '/images/project-art-bridges.jpg',
-    },
-  ],
-  2022: [
-    {
-      slug: 'lights-camera-action',
-      title: 'Lights, Camera, Action',
-      category: 'Erasmus+',
-      description: 'International youth exchange project focused on film art and media literacy.',
-      image: '/images/project-lights-camera-action.jpg',
-    },
-    {
-      slug: 'dance-fusion',
-      title: 'Dance Fusion',
-      category: 'Dance',
-      description: 'Fusion of traditional Macedonian dances with contemporary dance forms.',
-      image: '/images/project-dance-fusion.jpg',
-    },
-    {
-      slug: 'creative-labs',
-      title: 'Creative Labs',
-      category: 'Education',
-      description: 'Series of workshops for developing creative thinking and artistic skills.',
-      image: '/images/project-creative-labs.jpg',
-    },
-  ],
-  2021: [
-    {
-      slug: 'rising-stars',
-      title: 'Rising Stars',
-      category: 'Youth Program',
-      description: 'Program for discovering and supporting young artistic talents from Ohrid and the region.',
-      image: '/images/project-rising-stars.jpg',
-    },
-    {
-      slug: 'ohrid-summer-arts',
-      title: 'Ohrid Summer of Arts',
-      category: 'Festival',
-      description: 'Summer arts festival with exhibitions, performances, and workshops.',
-      image: '/images/project-summer-arts.jpg',
-    },
-  ],
-  2020: [
-    {
-      slug: 'foundation',
-      title: 'Foundation of Xanadu Art',
-      category: 'Organization',
-      description: 'Establishment of the organization and first steps in building an artistic community.',
-      image: '/images/project-foundation.jpg',
-    },
-  ],
-}
+    {} as Record<number, typeof projects>,
+  )
 
-export default function ProjectsPageEn() {
   const years = Object.keys(projectsByYear).sort((a, b) => Number(b) - Number(a))
 
   return (
@@ -154,19 +70,23 @@ export default function ProjectsPageEn() {
               
               {/* Projects Grid */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                {projectsByYear[Number(year)].map((project, index) => (
+                {projectsByYear[Number(year)].map((project) => (
                   <article
                     key={project.slug}
                     className="group rounded-2xl overflow-hidden bg-white border border-highlight/50 card-hover"
                   >
                     <Link href={`/en/project/${project.slug}/`} className="block">
                       <div className="relative aspect-[4/3] overflow-hidden">
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                        {project.images?.[0] ? (
+                          <Image
+                            src={project.images[0]}
+                            alt={project.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 hero-gradient" />
+                        )}
                         <div className="absolute top-4 left-4">
                           <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium text-primary-dark">
                             {project.category}

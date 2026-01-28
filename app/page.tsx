@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Users, Music, Theater, Globe, Sparkles, Heart, Lightbulb } from 'lucide-react'
+import { getProjectBySlug } from '@/app/_content/projects'
 
 export const metadata: Metadata = {
   title: 'Ксанаду Арт | Уметничка НВО - Охрид, Македонија',
@@ -39,32 +40,11 @@ const focusAreas = [
   },
 ]
 
-const featuredProjects = [
-  {
-    slug: 'lights-camera-action',
-    title: 'Lights, Camera, Action',
-    year: '2022',
-    category: 'Еразмус+',
-    description: 'Меѓународен проект за размена на млади фокусиран на филмска уметност и медиумска писменост.',
-    image: '/images/project-lights-camera-action.jpg',
-  },
-  {
-    slug: 'ohrid-youth-orchestra',
-    title: 'Охридски младински оркестар',
-    year: '2023',
-    category: 'Музика',
-    description: 'Оркестарска програма која обединува млади музичари од регионот за заеднички концерти.',
-    image: '/images/project-orchestra.jpg',
-  },
-  {
-    slug: 'theatrical-innovations',
-    title: 'Театарски иновации',
-    year: '2023',
-    category: 'Театар',
-    description: 'Работилница за современи театарски техники и експериментални форми на изведба.',
-    image: '/images/project-theater.jpg',
-  },
-]
+const featuredProjectSlugs = [
+  'tackling-self-stigma-together-ohrid',
+  'tackling-self-stigma-together-seville',
+  'tackling-self-stigma-together-curacao',
+] as const
 
 const values = [
   {
@@ -84,7 +64,11 @@ const values = [
   },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featuredProjects = (
+    await Promise.all(featuredProjectSlugs.map((slug) => getProjectBySlug(slug, 'mk')))
+  ).filter((p): p is NonNullable<typeof p> => Boolean(p))
+
   return (
     <>
       {/* Hero Section */}
@@ -234,7 +218,7 @@ export default function HomePage() {
           <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
             <span className="text-primary font-medium mb-2 block">Нашите вредности</span>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-dark mb-4">
-              Што не води
+            Што нè води
             </h2>
           </div>
           
@@ -288,12 +272,16 @@ export default function HomePage() {
               >
                 <Link href={`/project/${project.slug}/`} className="block">
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                    {project.images?.[0] ? (
+                      <Image
+                        src={project.images[0]}
+                        alt={project.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 hero-gradient" />
+                    )}
                     <div className="absolute top-4 left-4">
                       <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium text-primary-dark">
                         {project.category}

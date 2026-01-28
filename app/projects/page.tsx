@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Calendar } from 'lucide-react'
+import { getAllProjects } from '@/app/_content/projects'
 
 export const metadata: Metadata = {
   title: 'Проекти | Ксанаду Арт - Охрид, Македонија',
@@ -16,105 +17,20 @@ export const metadata: Metadata = {
   },
 }
 
-type ProjectCard = {
-  slug: string
-  title: string
-  category: string
-  description: string
-  image: string
-}
+export default async function ProjectsPage() {
+  const projects = await getAllProjects('mk')
 
-const projectsByYear: Record<number, ProjectCard[]> = {
-  2024: [
-    {
-      slug: 'cultural-horizons',
-      title: 'Културни хоризонти',
-      category: 'Културен настан',
-      description: 'Серија на културни настани кои ги прикажуваат традиционалните и современите уметнички форми од регионот.',
-      image: '/images/project-cultural-horizons.jpg',
+  const projectsByYear = projects.reduce(
+    (acc, project) => {
+      const yearNum = Number(project.year)
+      if (!Number.isFinite(yearNum)) return acc
+      acc[yearNum] ||= []
+      acc[yearNum].push(project)
+      return acc
     },
-    {
-      slug: 'youth-voices',
-      title: 'Гласови на младите',
-      category: 'Театарска работилница',
-      description: 'Интензивна театарска работилница фокусирана на развивање на гласовни техники и сценско присуство.',
-      image: '/images/project-youth-voices.jpg',
-    },
-  ],
-  2023: [
-    {
-      slug: 'ohrid-youth-orchestra',
-      title: 'Охридски младински оркестар',
-      category: 'Музика',
-      description: 'Оркестарска програма која обединува млади музичари од регионот за заеднички концерти и перформанси.',
-      image: '/images/project-orchestra.jpg',
-    },
-    {
-      slug: 'theatrical-innovations',
-      title: 'Театарски иновации',
-      category: 'Театар',
-      description: 'Работилница за современи театарски техники и експериментални форми на изведба.',
-      image: '/images/project-theater.jpg',
-    },
-    {
-      slug: 'art-bridges',
-      title: 'Уметнички мостови',
-      category: 'Меѓународна соработка',
-      description: 'Проект за поврзување на млади уметници од Македонија и соседните земји.',
-      image: '/images/project-art-bridges.jpg',
-    },
-  ],
-  2022: [
-    {
-      slug: 'lights-camera-action',
-      title: 'Lights, Camera, Action',
-      category: 'Еразмус+',
-      description: 'Меѓународен проект за размена на млади фокусиран на филмска уметност и медиумска писменост.',
-      image: '/images/project-lights-camera-action.jpg',
-    },
-    {
-      slug: 'dance-fusion',
-      title: 'Танц фузија',
-      category: 'Танц',
-      description: 'Фузија на традиционални македонски танци со современи танцови форми.',
-      image: '/images/project-dance-fusion.jpg',
-    },
-    {
-      slug: 'creative-labs',
-      title: 'Креативни лаборатории',
-      category: 'Образование',
-      description: 'Серија работилници за развивање на креативно размислување и уметнички вештини.',
-      image: '/images/project-creative-labs.jpg',
-    },
-  ],
-  2021: [
-    {
-      slug: 'rising-stars',
-      title: 'Иѕвијувајќи ѕвезди',
-      category: 'Младинска програма',
-      description: 'Програма за откривање и поддршка на млади уметнички таленти од Охрид и регионот.',
-      image: '/images/project-rising-stars.jpg',
-    },
-    {
-      slug: 'ohrid-summer-arts',
-      title: 'Охридско лето на уметноста',
-      category: 'Фестивал',
-      description: 'Летен фестивал на уметноста со изложби, перформанси и работилници.',
-      image: '/images/project-summer-arts.jpg',
-    },
-  ],
-  2020: [
-    {
-      slug: 'foundation',
-      title: 'Основање на Ксанаду Арт',
-      category: 'Организација',
-      description: 'Основање на организацијата и првите чекори во градење на уметничка заедница.',
-      image: '/images/project-foundation.jpg',
-    },
-  ],
-}
+    {} as Record<number, typeof projects>,
+  )
 
-export default function ProjectsPage() {
   const years = Object.keys(projectsByYear).sort((a, b) => Number(b) - Number(a))
 
   return (
@@ -154,19 +70,23 @@ export default function ProjectsPage() {
               
               {/* Projects Grid */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                {projectsByYear[Number(year)].map((project, index) => (
+                {projectsByYear[Number(year)].map((project) => (
                   <article
                     key={project.slug}
                     className="group rounded-2xl overflow-hidden bg-white border border-highlight/50 card-hover"
                   >
                     <Link href={`/project/${project.slug}/`} className="block">
                       <div className="relative aspect-[4/3] overflow-hidden">
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                        {project.images?.[0] ? (
+                          <Image
+                            src={project.images[0]}
+                            alt={project.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 hero-gradient" />
+                        )}
                         <div className="absolute top-4 left-4">
                           <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium text-primary-dark">
                             {project.category}

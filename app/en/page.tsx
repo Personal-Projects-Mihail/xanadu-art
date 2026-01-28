@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Users, Music, Theater, Globe, Sparkles, Heart, Lightbulb } from 'lucide-react'
+import { getProjectBySlug } from '@/app/_content/projects'
 
 export const metadata: Metadata = {
   title: 'Xanadu Art | Art NGO - Ohrid, Macedonia',
@@ -39,32 +40,11 @@ const focusAreas = [
   },
 ]
 
-const featuredProjects = [
-  {
-    slug: 'lights-camera-action',
-    title: 'Lights, Camera, Action',
-    year: '2022',
-    category: 'Erasmus+',
-    description: 'International youth exchange project focused on film art and media literacy.',
-    image: '/images/project-lights-camera-action.jpg',
-  },
-  {
-    slug: 'ohrid-youth-orchestra',
-    title: 'Ohrid Youth Orchestra',
-    year: '2023',
-    category: 'Music',
-    description: 'Orchestra program bringing together young musicians from the region for joint concerts.',
-    image: '/images/project-orchestra.jpg',
-  },
-  {
-    slug: 'theatrical-innovations',
-    title: 'Theatrical Innovations',
-    year: '2023',
-    category: 'Theater',
-    description: 'Workshop on contemporary theatrical techniques and experimental performance forms.',
-    image: '/images/project-theater.jpg',
-  },
-]
+const featuredProjectSlugs = [
+  'tackling-self-stigma-together-ohrid',
+  'tackling-self-stigma-together-seville',
+  'tackling-self-stigma-together-curacao',
+] as const
 
 const values = [
   {
@@ -84,7 +64,11 @@ const values = [
   },
 ]
 
-export default function HomePageEn() {
+export default async function HomePageEn() {
+  const featuredProjects = (
+    await Promise.all(featuredProjectSlugs.map((slug) => getProjectBySlug(slug, 'en')))
+  ).filter((p): p is NonNullable<typeof p> => Boolean(p))
+
   return (
     <>
       {/* Hero Section */}
@@ -288,12 +272,16 @@ export default function HomePageEn() {
               >
                 <Link href={`/en/project/${project.slug}/`} className="block">
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                    {project.images?.[0] ? (
+                      <Image
+                        src={project.images[0]}
+                        alt={project.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 hero-gradient" />
+                    )}
                     <div className="absolute top-4 left-4">
                       <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium text-primary-dark">
                         {project.category}

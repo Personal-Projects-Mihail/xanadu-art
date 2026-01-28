@@ -3,20 +3,9 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Calendar, Tag, Users, MapPin } from 'lucide-react'
-
-type Project = {
-  title: string
-  year: string
-  category: string
-  location: string
-  participants: string
-  description: string
-  fullDescription: string
-  objectives: string[]
-  results: string[]
-  images: string[]
-  partners: string[]
-}
+import { getProjectBySlug, getProjectSlugs } from '@/app/_content/projects'
+import path from 'node:path'
+import { access } from 'node:fs/promises'
 
 interface ProjectPageProps {
   params: Promise<{
@@ -24,457 +13,56 @@ interface ProjectPageProps {
   }>
 }
 
-const projects: Record<string, Project> = {
-  'lights-camera-action': {
-    title: 'Lights, Camera, Action',
-    year: '2022',
-    category: 'Erasmus+',
-    location: 'Ohrid, Macedonia',
-    participants: '40 youth from 8 countries',
-    description: `
-      Lights, Camera, Action is an international youth exchange project funded by 
-      the European Union's Erasmus+ program. The project brought together 40 young 
-      people from 8 different countries in Ohrid, Macedonia, to explore topics related 
-      to film art and media literacy.
-    `,
-    fullDescription: `
-      During the ten-day exchange, participants had the opportunity to learn from 
-      experienced filmmakers and media experts, create their own short films, and 
-      develop critical thinking skills about media.
-      
-      The project included workshops on filming, editing, screenwriting, and directing, 
-      as well as discussion sessions about the role of media in contemporary society.
-      
-      Participants worked in multinational teams, which allowed them not only to develop 
-      their technical skills but also to build intercultural friendships and improve 
-      their understanding of different cultures.
-    `,
-    objectives: [
-      'To develop media skills among young people',
-      'To promote critical thinking about media',
-      'To facilitate intercultural dialogue',
-      'To encourage creative expression through film',
-      'To build lasting partnerships between organizations',
-    ],
-    results: [
-      '8 short films created by participants',
-      'Public screening organized in Ohrid',
-      'Online platform created for sharing films',
-      'Partnerships established with 8 organizations from Europe',
-    ],
-    images: [
-      '/images/project-lights-camera-action-1.jpg',
-      '/images/project-lights-camera-action-2.jpg',
-      '/images/project-lights-camera-action-3.jpg',
-    ],
-    partners: ['Erasmus+', 'European Union', '8 partner organizations'],
-  },
-  'ohrid-youth-orchestra': {
-    title: 'Ohrid Youth Orchestra',
-    year: '2023',
-    category: 'Music',
-    location: 'Ohrid, Macedonia',
-    participants: '60 young musicians',
-    description: `
-      The Ohrid Youth Orchestra is a program that brings together young musicians 
-      from Ohrid and the region for joint concerts and high-level performances.
-    `,
-    fullDescription: `
-      The Ohrid Youth Orchestra represents an ambitious project aimed at gathering 
-      the most talented young musicians from the region and providing them with 
-      professional orchestra experience.
-      
-      The orchestra works under the mentorship of experienced conductors and musicians, 
-      with a focus on classical music, but also includes arrangements of popular and 
-      traditional music.
-      
-      Throughout the year, the orchestra held several concerts in Ohrid and other 
-      cities in Macedonia, including the traditional New Year's concert.
-    `,
-    objectives: [
-      'To develop orchestra skills among young musicians',
-      'To promote classical music among youth',
-      'To create a platform for collaboration between musicians',
-      'To enrich the cultural life of Ohrid',
-    ],
-    results: [
-      '5 public concerts organized',
-      'Participation of 60 young musicians',
-      'Works by Bach, Mozart, Beethoven, and Macedonian composers performed',
-      'Collaboration with guest musicians from abroad',
-    ],
-    images: [
-      '/images/project-orchestra-1.jpg',
-      '/images/project-orchestra-2.jpg',
-      '/images/project-orchestra-3.jpg',
-    ],
-    partners: ['Municipality of Ohrid', 'Music School Ohrid'],
-  },
-  'theatrical-innovations': {
-    title: 'Theatrical Innovations',
-    year: '2023',
-    category: 'Theater',
-    location: 'Ohrid, Macedonia',
-    participants: '25 young actors',
-    description: `
-      Theatrical Innovations is an intensive workshop on contemporary theatrical 
-      techniques and experimental performance forms.
-    `,
-    fullDescription: `
-      The Theatrical Innovations workshop was designed for young actors and theater 
-      enthusiasts who want to expand their horizons and experiment with new forms 
-      of theatrical expression.
-      
-      Over the course of a month, participants worked with experienced theater 
-      practitioners who introduced them to techniques such as physical theater, 
-      improvisation, forum theater, and choreography for actors.
-      
-      The workshop concluded with a public performance that combined all the learned 
-      techniques into one innovative theatrical production.
-    `,
-    objectives: [
-      'To introduce young people to contemporary theatrical techniques',
-      'To encourage experimentation with form',
-      'To develop stage skills',
-      'To create a new theatrical production',
-    ],
-    results: [
-      '25 young actors trained in contemporary techniques',
-      'Original theater play created',
-      '3 public performances in Ohrid',
-      'Audience of over 300 viewers',
-    ],
-    images: [
-      '/images/project-theater-1.jpg',
-      '/images/project-theater-2.jpg',
-      '/images/project-theater-3.jpg',
-    ],
-    partners: ['National Theater Ohrid'],
-  },
-  'cultural-horizons': {
-    title: 'Cultural Horizons',
-    year: '2024',
-    category: 'Cultural Event',
-    location: 'Ohrid, Macedonia',
-    participants: '200+ visitors',
-    description: `
-      Cultural Horizons is a series of cultural events showcasing traditional and 
-      contemporary art forms from the region.
-    `,
-    fullDescription: `
-      Cultural Horizons is an ambitious project aimed at enriching the cultural 
-      life of Ohrid and showcasing the various art forms present in the region.
-      
-      The series includes exhibitions of visual arts, concerts of traditional and 
-      contemporary music, theater performances, and workshops for the public.
-      
-      The project connects artists from different generations and disciplines, 
-      creating space for dialogue and collaboration.
-    `,
-    objectives: [
-      'To promote the cultural heritage of the region',
-      'To support local artists',
-      'To enrich the cultural life of Ohrid',
-      'To create dialogue between generations',
-    ],
-    results: [
-      '10 cultural events organized',
-      'Participation of 30+ artists',
-      'Attendance of over 200 people',
-      'Media coverage in local media',
-    ],
-    images: [
-      '/images/project-cultural-horizons-1.jpg',
-      '/images/project-cultural-horizons-2.jpg',
-      '/images/project-cultural-horizons-3.jpg',
-    ],
-    partners: ['Municipality of Ohrid', 'Cultural Heritage Ohrid'],
-  },
-  'youth-voices': {
-    title: 'Youth Voices',
-    year: '2024',
-    category: 'Theater Workshop',
-    location: 'Ohrid, Macedonia',
-    participants: '20 young actors',
-    description: `
-      Intensive theater workshop focused on developing voice techniques and 
-      stage presence.
-    `,
-    fullDescription: `
-      Youth Voices is a specialized workshop dedicated to developing voice skills 
-      and stage presence in young actors.
-      
-      Under the mentorship of experienced actors and vocal coaches, participants 
-      worked on techniques for diaphragmatic breathing, articulation, voice 
-      projection, and emotional expression through voice.
-      
-      The workshop also included sessions for text analysis and interpretation, 
-      with a focus on contemporary dramaturgy.
-    `,
-    objectives: [
-      'To develop voice techniques',
-      'To improve stage presence',
-      'To build self-confidence in young actors',
-      'To create a new theatrical production',
-    ],
-    results: [
-      '20 young actors trained',
-      'Voice technique skills developed',
-      'Final public performance',
-      'Video recordings of performances',
-    ],
-    images: [
-      '/images/project-youth-voices-1.jpg',
-      '/images/project-youth-voices-2.jpg',
-      '/images/project-youth-voices-3.jpg',
-    ],
-    partners: ['National Theater Ohrid'],
-  },
-  'art-bridges': {
-    title: 'Art Bridges',
-    year: '2023',
-    category: 'International Collaboration',
-    location: 'Ohrid, Macedonia',
-    participants: '30 young artists from 3 countries',
-    description: `
-      Project connecting young artists from Macedonia and neighboring countries 
-      through joint creative activities.
-    `,
-    fullDescription: `
-      Art Bridges is a project that connects young artists from Macedonia, Serbia, 
-      and Albania for joint creative work and exchange of experiences.
-      
-      The project included a residency in Ohrid where artists worked together on 
-      interdisciplinary projects that combined theater, music, and visual arts.
-      
-      The result was a series of performances and exhibitions that were shown in 
-      all three participating countries.
-    `,
-    objectives: [
-      'To promote regional collaboration',
-      'To develop interdisciplinary projects',
-      'To build lasting connections between artists',
-      'To bridge cultural differences',
-    ],
-    results: [
-      '30 young artists involved',
-      '5 interdisciplinary projects created',
-      'Tour in 3 countries',
-      'Partnerships established with organizations from the region',
-    ],
-    images: [
-      '/images/project-art-bridges-1.jpg',
-      '/images/project-art-bridges-2.jpg',
-      '/images/project-art-bridges-3.jpg',
-    ],
-    partners: ['Partner organizations from Serbia and Albania'],
-  },
-  'dance-fusion': {
-    title: 'Dance Fusion',
-    year: '2022',
-    category: 'Dance',
-    location: 'Ohrid, Macedonia',
-    participants: '15 dancers',
-    description: `
-      Fusion of traditional Macedonian dances with contemporary dance forms.
-    `,
-    fullDescription: `
-      Dance Fusion is a project that combines the rich traditional Macedonian 
-      dances with contemporary dance forms to create something new and unique.
-      
-      The project brought together dancers with different backgrounds - from 
-      traditional folklore dancers to contemporary dancers - who worked together 
-      to create new choreography.
-      
-      The result was a performance that respects the roots of Macedonian tradition 
-      while simultaneously pushing the art forward with contemporary dance techniques.
-    `,
-    objectives: [
-      'To preserve traditional heritage',
-      'To create a new dance form',
-      'To connect traditional and contemporary dancers',
-      'To promote Macedonian culture',
-    ],
-    results: [
-      'New choreography created',
-      '3 public performances',
-      'Video documentation of the project',
-      'Regional tour',
-    ],
-    images: [
-      '/images/project-dance-fusion-1.jpg',
-      '/images/project-dance-fusion-2.jpg',
-      '/images/project-dance-fusion-3.jpg',
-    ],
-    partners: ['Folklore Ensemble Ohrid'],
-  },
-  'creative-labs': {
-    title: 'Creative Labs',
-    year: '2022',
-    category: 'Education',
-    location: 'Ohrid, Macedonia',
-    participants: '50 youth',
-    description: `
-      Series of workshops for developing creative thinking and artistic skills.
-    `,
-    fullDescription: `
-      Creative Labs is a series of workshops designed to help young people develop 
-      their creative potential and artistic skills.
-      
-      The workshops covered various topics - from drawing and painting, through 
-      creative writing, to basics of acting and dance. Each workshop was led by 
-      an experienced artist or educator.
-      
-      The project aimed to make arts education accessible to all young people in 
-      Ohrid, regardless of their previous experience.
-    `,
-    objectives: [
-      'To develop creative thinking',
-      'To learn basic artistic skills',
-      'To make art accessible to all',
-      'To discover new talents',
-    ],
-    results: [
-      '10 workshops organized',
-      '50 young participants',
-      'Final exhibition of created works',
-      'Activity booklet for teachers',
-    ],
-    images: [
-      '/images/project-creative-labs-1.jpg',
-      '/images/project-creative-labs-2.jpg',
-      '/images/project-creative-labs-3.jpg',
-    ],
-    partners: ['Municipality of Ohrid', 'Educational institutions'],
-  },
-  'rising-stars': {
-    title: 'Rising Stars',
-    year: '2021',
-    category: 'Youth Program',
-    location: 'Ohrid, Macedonia',
-    participants: '30 young talents',
-    description: `
-      Program for discovering and supporting young artistic talents from Ohrid and the region.
-    `,
-    fullDescription: `
-      Rising Stars is a program designed to identify and support the most talented 
-      young artists from Ohrid and the surrounding area.
-      
-      Through auditions and recommendations, we selected 30 young people with 
-      expressed artistic potential who received mentorship, training, and the 
-      opportunity to perform at public events.
-      
-      The program included workshops, individual lessons with mentors, and a final 
-      concert/exhibition where participants showcased their achievements.
-    `,
-    objectives: [
-      'To discover young talents',
-      'To provide mentorship',
-      'To create performance opportunities',
-      'To build self-confidence',
-    ],
-    results: [
-      '30 young talents identified',
-      '100+ hours of mentorship',
-      'Final concert with 200+ viewers',
-      'Several participants continued with artistic careers',
-    ],
-    images: [
-      '/images/project-rising-stars-1.jpg',
-      '/images/project-rising-stars-2.jpg',
-      '/images/project-rising-stars-3.jpg',
-    ],
-    partners: ['Music School Ohrid', 'Art School'],
-  },
-  'ohrid-summer-arts': {
-    title: 'Ohrid Summer of Arts',
-    year: '2021',
-    category: 'Festival',
-    location: 'Ohrid, Macedonia',
-    participants: '500+ visitors',
-    description: `
-      Summer arts festival with exhibitions, performances, and workshops.
-    `,
-    fullDescription: `
-      Ohrid Summer of Arts is a festival that marked the end of summer with a 
-      series of artistic events throughout the city.
-      
-      The festival included exhibitions of visual arts in public spaces, street 
-      performances, open-air concerts, and workshops for the public.
-      
-      The goal was to make art accessible to all residents and visitors of Ohrid 
-      and to enrich the cultural life of the city.
-    `,
-    objectives: [
-      'To enrich the cultural life of Ohrid',
-      'To make art accessible to all',
-      'To promote local artists',
-      'To attract tourists',
-    ],
-    results: [
-      '15 events organized',
-      'Attendance of 500+ people',
-      'Participation of 40+ artists',
-      'Media coverage',
-    ],
-    images: [
-      '/images/project-summer-arts-1.jpg',
-      '/images/project-summer-arts-2.jpg',
-      '/images/project-summer-arts-3.jpg',
-    ],
-    partners: ['Municipality of Ohrid', 'Tourist Organization'],
-  },
-  'foundation': {
-    title: 'Foundation of Xanadu Art',
-    year: '2020',
-    category: 'Organization',
-    location: 'Ohrid, Macedonia',
-    participants: '5 founders',
-    description: `
-      Establishment of the organization and first steps in building an artistic community.
-    `,
-    fullDescription: `
-      Xanadu Art was founded in 2020 by a group of five enthusiasts who shared 
-      a common vision of creating a space for young people to express themselves 
-      through art.
-      
-      Although the beginning was challenging due to the pandemic, we managed to 
-      establish the foundations of the organization and start the first activities 
-      online and with small groups.
-      
-      This period allowed us to define our mission and vision and establish contacts 
-      with future partners.
-    `,
-    objectives: [
-      'To establish the organization',
-      'To define mission and vision',
-      'To build partnerships',
-      'To start first activities',
-    ],
-    results: [
-      'Registered organization',
-      'Built basic structure',
-      'Established first partnerships',
-      'Organized online activities',
-    ],
-    images: [
-      '/images/project-foundation-1.jpg',
-      '/images/project-foundation-2.jpg',
-      '/images/project-foundation-3.jpg',
-    ],
-    partners: ['Local artists', 'Volunteers'],
-  },
+async function fileExists(absPath: string): Promise<boolean> {
+  try {
+    await access(absPath)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function getProjectImagesFromPublic(slug: string): Promise<{ cover?: string; gallery: string[] }> {
+  // Support both:
+  // - public/<slug>/cover.jpg, 01.jpg..06.jpg (current convention used in repo)
+  // - public/projects/<slug>/... (older convention)
+  const candidateDirs = [slug, path.posix.join('projects', slug)]
+
+  for (const relDir of candidateDirs) {
+    const fsDir = path.join(process.cwd(), 'public', relDir)
+
+    const coverFsPath = path.join(fsDir, 'cover.jpg')
+    const coverExists = await fileExists(coverFsPath)
+
+    const galleryChecks = await Promise.all(
+      Array.from({ length: 6 }, (_, i) => {
+        const fileName = `${String(i + 1).padStart(2, '0')}.jpg`
+        const fsPath = path.join(fsDir, fileName)
+        return fileExists(fsPath).then((exists) => (exists ? `/${relDir}/${fileName}` : null))
+      }),
+    )
+
+    const gallery = galleryChecks.filter(Boolean) as string[]
+
+    if (coverExists || gallery.length > 0) {
+      return {
+        cover: coverExists ? `/${relDir}/cover.jpg` : undefined,
+        gallery,
+      }
+    }
+  }
+
+  return { cover: undefined, gallery: [] }
 }
 
 export async function generateStaticParams() {
-  return Object.keys(projects).map((slug) => ({
-    slug,
-  }))
+  const slugs = await getProjectSlugs('en')
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params
-  const project = projects[slug]
+  const project = await getProjectBySlug(slug, 'en')
   
   if (!project) {
     return {
@@ -482,6 +70,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     }
   }
   
+  const publicImages = await getProjectImagesFromPublic(slug)
+  const contentImages = project.images ?? []
+  const ogImage = publicImages.cover ?? contentImages[0] ?? publicImages.gallery[0]
+
   return {
     title: `${project.title} | Xanadu Art - Ohrid, Macedonia`,
     description: project.description,
@@ -492,28 +84,60 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       title: `${project.title} | Xanadu Art`,
       description: project.description,
       url: `https://xanaduart.mk/en/project/${slug}/`,
-      images: [
-        {
-          url: `https://xanaduart.mk${project.images[0]}`,
-          alt: project.title,
-        },
-      ],
+      images: ogImage
+        ? [
+            {
+              url: `https://xanaduart.mk${ogImage}`,
+              alt: project.title,
+            },
+          ]
+        : undefined,
     },
   }
 }
 
 export default async function ProjectPageEn({ params }: ProjectPageProps) {
   const { slug } = await params
-  const project = projects[slug]
+  const project = await getProjectBySlug(slug, 'en')
   
   if (!project) {
     notFound()
   }
 
+  const publicImages = await getProjectImagesFromPublic(slug)
+  const contentImages = project.images ?? []
+
+  const [contentCover, c01, c02, c03, c04, c05, c06] = contentImages
+  const [p01, p02, p03, p04, p05, p06] = publicImages.gallery
+
+  const coverImage = publicImages.cover ?? contentCover
+  const img01 = p01 ?? c01
+  const img02 = p02 ?? c02
+  const img03 = p03 ?? c03
+  const img04 = p04 ?? c04
+  const img05 = p05 ?? c05
+  const img06 = p06 ?? c06
+
+  const images12 = [img01, img02].filter(Boolean) as string[]
+  const images34 = [img03, img04].filter(Boolean) as string[]
+  const images56 = [img05, img06].filter(Boolean) as string[]
+
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-16 lg:py-24 hero-gradient">
+      <section className="relative py-16 lg:py-24 overflow-hidden">
+        {/* Cover image background */}
+        {coverImage ? (
+          <Image
+            src={coverImage}
+            alt={`${project.title} - cover`}
+            fill
+            priority
+            className="object-cover"
+          />
+        ) : null}
+        {/* Overlays for readability */}
+        <div className="absolute inset-0 hero-gradient opacity-90" />
         <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
@@ -549,29 +173,6 @@ export default async function ProjectPageEn({ params }: ProjectPageProps) {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Gallery */}
-              <div className="grid grid-cols-2 gap-4 mb-10">
-                <div className="col-span-2 relative aspect-video rounded-2xl overflow-hidden">
-                  <Image
-                    src={project.images[0]}
-                    alt={`${project.title} - main image`}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-                {project.images.slice(1).map((image, index) => (
-                  <div key={index} className="relative aspect-square rounded-2xl overflow-hidden">
-                    <Image
-                      src={image}
-                      alt={`${project.title} - image ${index + 2}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-
               {/* Description */}
               <div className="prose prose-lg max-w-none">
                 <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-4">
@@ -583,6 +184,20 @@ export default async function ProjectPageEn({ params }: ProjectPageProps) {
                   </p>
                 ))}
               </div>
+
+              {/* Images 01 & 02 */}
+              {images12.length > 0 ? (
+                <div className={`mt-10 grid gap-4 ${images12.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+                  {images12.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`relative rounded-2xl overflow-hidden ${images12.length > 1 ? 'aspect-video sm:aspect-square' : 'aspect-video'}`}
+                    >
+                      <Image src={src} alt={`${project.title} - image ${idx + 1}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
               {/* Objectives */}
               <div className="mt-10">
@@ -599,6 +214,20 @@ export default async function ProjectPageEn({ params }: ProjectPageProps) {
                 </ul>
               </div>
 
+              {/* Images 03 & 04 */}
+              {images34.length > 0 ? (
+                <div className={`mt-10 grid gap-4 ${images34.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+                  {images34.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`relative rounded-2xl overflow-hidden ${images34.length > 1 ? 'aspect-video sm:aspect-square' : 'aspect-video'}`}
+                    >
+                      <Image src={src} alt={`${project.title} - image ${idx + 3}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
               {/* Results */}
               <div className="mt-10">
                 <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-4">
@@ -613,6 +242,20 @@ export default async function ProjectPageEn({ params }: ProjectPageProps) {
                   ))}
                 </ul>
               </div>
+
+              {/* Images 05 & 06 (if present) */}
+              {images56.length > 0 ? (
+                <div className={`mt-10 grid gap-4 ${images56.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+                  {images56.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`relative rounded-2xl overflow-hidden ${images56.length > 1 ? 'aspect-video sm:aspect-square' : 'aspect-video'}`}
+                    >
+                      <Image src={src} alt={`${project.title} - image ${idx + 5}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             {/* Sidebar */}

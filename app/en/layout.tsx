@@ -1,7 +1,4 @@
 import type { Metadata } from 'next'
-import '../../styles/globals.css'
-import Header from '@/components/HeaderEn'
-import Footer from '@/components/FooterEn'
 
 export const metadata: Metadata = {
   title: 'Xanadu Art | Art NGO - Ohrid, Macedonia',
@@ -48,24 +45,5 @@ export default function EnglishLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#540863" />
-      </head>
-      <body className="min-h-screen flex flex-col">
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
-        <Header />
-        <main id="main-content" className="flex-grow">
-          {children}
-        </main>
-        <Footer />
-      </body>
-    </html>
-  )
+  return children
 }
