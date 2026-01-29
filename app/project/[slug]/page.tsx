@@ -256,6 +256,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   ))}
                 </div>
               ) : null}
+
+              {/* Facebook CTA */}
+              <div className="mt-10 p-6 rounded-2xl bg-highlight/20 border border-highlight/40">
+                <p className="text-text-secondary">
+                  За да го прочитате и останатиот дел од приказната, погледнете ја нашата{' '}
+                  <a
+                    href="https://www.facebook.com/xanaduartngo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-primary-dark hover:text-accent underline underline-offset-2 transition-colors"
+                  >
+                    Фејзбук страница →
+                  </a>
+                </p>
+              </div>
             </div>
 
             {/* Sidebar */}
@@ -319,13 +334,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     Сакате сличен проект?
                   </h3>
                   <p className="text-white/80 text-sm mb-4">
-    Контактирајте не за да дискутираме за вашите идеи.
+    Контактирајте нè за да дискутираме за вашите идеи.
                   </p>
                   <Link 
                     href="/contact/" 
                     className="inline-flex items-center gap-2 bg-white text-primary-dark px-4 py-2 rounded-lg font-medium hover:bg-highlight transition-colors text-sm"
                   >
-                    Контактирајте не
+                    Контактирајте нè
                     <ArrowLeft className="w-4 h-4 rotate-180" aria-hidden="true" />
                   </Link>
                 </div>

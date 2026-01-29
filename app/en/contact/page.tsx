@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Mail, MapPin, Phone, Facebook, Instagram, Youtube, Send } from 'lucide-react'
+import { Mail, MapPin, Phone, Facebook, Send } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Contact | Xanadu Art - Ohrid, Macedonia',
@@ -18,27 +18,25 @@ const contactInfo = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'info@xanaduart.mk',
-    href: 'mailto:info@xanaduart.mk',
+    value: 'xanadu_ohrid@yahoo.com',
+    href: 'mailto:xanadu_ohrid@yahoo.com',
   },
   {
     icon: Phone,
     label: 'Phone',
-    value: '+389 70 123 456',
-    href: 'tel:+38970123456',
+    value: '+389 75 308 447',
+    href: 'tel:+38975308447',
   },
   {
     icon: MapPin,
     label: 'Address',
-    value: 'Kiril i Metodij str. 1, 6000 Ohrid, Macedonia',
-    href: 'https://maps.google.com/?q=Ohrid,Macedonia',
+    value: '"Petar Chaulev" 52, 6000 Ohrid, Macedonia',
+    href: 'https://maps.app.goo.gl/YLPtZ9A3Rt7uvv5A9',
   },
 ]
 
 const socialLinks = [
-  { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/xanaduart' },
-  { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/xanaduart' },
-  { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/xanaduart' },
+  { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/xanaduartngo' },
 ]
 
 export default function ContactPageEn() {
@@ -70,7 +68,7 @@ export default function ContactPageEn() {
               <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-6">
                 Send us a message
               </h2>
-              <form className="space-y-6" action="mailto:info@xanaduart.mk" method="post" encType="text/plain">
+              <form className="space-y-6" action="mailto:xanadu_ohrid@yahoo.com" method="post" encType="text/plain">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-text-primary mb-2">
@@ -224,7 +222,7 @@ export default function ContactPageEn() {
           
           <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[16/9] lg:aspect-[21/9]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24023.2860423427!2d20.7947!3d41.1171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350db0f9e1f8c6f%3A0x5d5d5d5d5d5d5d5d!2sOhrid%2C%20North%20Macedonia!5e0!3m2!1sen!2s!4v1609459200000!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d150.11!2d20.801!3d41.117!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sPetar%20Chaulev%2052%2C%20Ohrid%2C%20North%20Macedonia!5e0!3m2!1sen!2s!4v1706544000000!5m2!1sen!2s"
               width="100%"
               height="100%"
               style={{ border: 0 }}

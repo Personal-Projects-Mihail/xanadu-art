@@ -126,14 +126,14 @@ export default async function ProjectsPage() {
                 Сакате да соработуваме?
               </h2>
               <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
-                Отворени сме за нови проекти и партнерства. Контактирајте не за да 
+                Отворени сме за нови проекти и партнерства. Контактирајте нè за да 
                 дискутираме како можеме заедно да создадеме нешто прекрасно.
               </p>
               <Link 
                 href="/contact/" 
                 className="bg-white text-primary-dark px-8 py-3 rounded-lg font-medium hover:bg-highlight transition-colors inline-flex items-center gap-2"
               >
-                Контактирајте не
+                Контактирајте нè
                 <ArrowRight className="w-5 h-5" aria-hidden="true" />
               </Link>
             </div>

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   creator: 'Xanadu Art NGO',
   publisher: 'Xanadu Art NGO',
   robots: 'index, follow',
+  icons: { icon: '/favicon.ico' },
   alternates: {
     canonical: 'https://xanaduart.mk/',
     languages: {
@@ -53,7 +54,6 @@ export default function RootLayout({
   return (
     <html lang="mk">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#540863" />

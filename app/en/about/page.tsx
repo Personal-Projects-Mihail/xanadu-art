@@ -163,7 +163,7 @@ export default function AboutPageEn() {
             <div className="order-1 lg:order-2 relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/about-story.jpg"
+                  src="/images/about1.jpg"
                   alt="Xanadu Art team at work"
                   width={600}
                   height={500}
@@ -312,18 +312,14 @@ export default function AboutPageEn() {
                 ))}
               </div>
             </div>
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/images/expertise-image.jpg"
-                  alt="Young artists in action"
-                  width={600}
-                  height={500}
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-2xl bg-accent/20 -z-10" />
-              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-highlight -z-10" />
+            <div>
+              <Image
+                src="/images/about2.jpg"
+                alt="Young artists in action"
+                width={600}
+                height={500}
+                className="w-full h-auto object-cover"
+              />
             </div>
           </div>
         </div>

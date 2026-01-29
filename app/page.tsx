@@ -74,8 +74,18 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10" />
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero.jpg"
+            alt=""
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        </div>
+        <div className="absolute inset-0 hero-gradient opacity-75" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10" aria-hidden="true" />
         
         {/* Decorative Elements */}
         <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
@@ -323,14 +333,14 @@ export default async function HomePage() {
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/contact/" className="bg-white text-primary-dark px-8 py-3 rounded-lg font-medium hover:bg-highlight transition-colors inline-flex items-center gap-2">
-                  Контактирајте не
+                  Контактирајте нè
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
                 <a 
-                  href="mailto:info@xanaduart.mk" 
+                  href="mailto:xanadu_ohrid@yahoo.com" 
                   className="bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-medium hover:bg-white/20 transition-colors"
                 >
-                  info@xanaduart.mk
+                  xanadu_ohrid@yahoo.com
                 </a>
               </div>
             </div>

@@ -256,6 +256,21 @@ export default async function ProjectPageEn({ params }: ProjectPageProps) {
                   ))}
                 </div>
               ) : null}
+
+              {/* Facebook CTA */}
+              <div className="mt-10 p-6 rounded-2xl bg-highlight/20 border border-highlight/40">
+                <p className="text-text-secondary">
+                  To read the rest of the story, check out our{' '}
+                  <a
+                    href="https://www.facebook.com/xanaduartngo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-primary-dark hover:text-accent underline underline-offset-2 transition-colors"
+                  >
+                    Facebook page →
+                  </a>
+                </p>
+              </div>
             </div>
 
             {/* Sidebar */}

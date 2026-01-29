@@ -167,7 +167,7 @@ export default function AboutPage() {
             <div className="order-1 lg:order-2 relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/about-story.jpg"
+                  src="/images/about1.jpg"
                   alt="Ксанаду Арт тим на работа"
                   width={600}
                   height={500}
@@ -220,7 +220,7 @@ export default function AboutPage() {
           <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
             <span className="text-primary font-medium mb-2 block">Нашите вредности</span>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-dark mb-4">
-              Принципи кои не водат
+              Принципи кои нè водат
             </h2>
             <p className="text-text-secondary text-lg">
               Овие вредности се темелот на се што правиме и го дефинираат нашиот пристап кон работата со младите.
@@ -319,7 +319,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/expertise-image.jpg"
+                  src="/images/about2.jpg"
                   alt="Млади уметници во акција"
                   width={600}
                   height={500}

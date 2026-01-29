@@ -74,8 +74,18 @@ export default async function HomePageEn() {
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10" />
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero.jpg"
+            alt=""
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        </div>
+        <div className="absolute inset-0 hero-gradient opacity-75" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10" aria-hidden="true" />
         
         {/* Decorative Elements */}
         <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
@@ -158,19 +168,15 @@ export default async function HomePageEn() {
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/images/mission-image.jpg"
-                  alt="Young artists at a workshop"
-                  width={600}
-                  height={500}
-                  className="w-full h-auto object-cover"
-                  priority
-                />
-              </div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-2xl bg-accent/20 -z-10" />
-              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-highlight -z-10" />
+            <div>
+              <Image
+                src="/images/mission-image.jpg"
+                alt="Young artists at a workshop"
+                width={600}
+                height={500}
+                className="w-full h-auto object-cover"
+                priority
+              />
             </div>
           </div>
         </div>
@@ -327,10 +333,10 @@ export default async function HomePageEn() {
                   <ArrowRight className="w-5 h-5" aria-hidden="true" />
                 </Link>
                 <a 
-                  href="mailto:info@xanaduart.mk" 
+                  href="mailto:xanadu_ohrid@yahoo.com" 
                   className="bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-medium hover:bg-white/20 transition-colors"
                 >
-                  info@xanaduart.mk
+                  xanadu_ohrid@yahoo.com
                 </a>
               </div>
             </div>

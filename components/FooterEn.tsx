@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Mail, MapPin, Phone, Facebook, Instagram, Youtube } from 'lucide-react'
+import Image from 'next/image'
+import { Mail, MapPin, Phone, Facebook } from 'lucide-react'
 
 const quickLinks = [
   { href: '/en/', label: 'Home' },
@@ -9,9 +10,7 @@ const quickLinks = [
 ]
 
 const socialLinks = [
-  { href: 'https://facebook.com/xanaduart', icon: Facebook, label: 'Facebook' },
-  { href: 'https://instagram.com/xanaduart', icon: Instagram, label: 'Instagram' },
-  { href: 'https://youtube.com/xanaduart', icon: Youtube, label: 'YouTube' },
+  { href: 'https://www.facebook.com/xanaduartngo', icon: Facebook, label: 'Facebook' },
 ]
 
 export default function FooterEn() {
@@ -23,13 +22,13 @@ export default function FooterEn() {
           {/* Organization Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                <span className="text-white font-display font-bold text-xl">X</span>
-              </div>
-              <div>
-                <h3 className="font-display font-semibold text-xl">Xanadu Art</h3>
-                <p className="text-white/70 text-sm">Art NGO</p>
-              </div>
+              <Image
+                src="/images/logo.png"
+                alt="Xanadu Art"
+                width={220}
+                height={80}
+                className="h-16 w-auto lg:h-20 object-contain"
+              />
             </div>
             <p className="text-white/80 max-w-md mb-6 leading-relaxed">
               A non-profit, non-political, non-denominational association founded in 2020 
@@ -78,27 +77,27 @@ export default function FooterEn() {
             <ul className="space-y-4">
               <li>
                 <a
-                  href="mailto:info@xanaduart.mk"
+                  href="mailto:xanadu_ohrid@yahoo.com"
                   className="text-white/80 hover:text-accent transition-colors flex items-start gap-3"
                 >
                   <Mail className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                  <span>info@xanaduart.mk</span>
+                  <span>xanadu_ohrid@yahoo.com</span>
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+38970123456"
+                  href="tel:+38975308447"
                   className="text-white/80 hover:text-accent transition-colors flex items-start gap-3"
                 >
                   <Phone className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                  <span>+389 70 123 456</span>
+                  <span>+389 75 308 447</span>
                 </a>
               </li>
               <li>
                 <div className="text-white/80 flex items-start gap-3">
                   <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
                   <address className="not-italic">
-                    Kiril i Metodij str. 1<br />
+                    &quot;Petar Chaulev&quot; 52<br />
                     6000 Ohrid, Macedonia
                   </address>
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Globe } from 'lucide-react'
 
@@ -33,15 +34,13 @@ export default function HeaderEn() {
             className="flex items-center gap-3 group"
             aria-label="Xanadu Art - Home"
           >
-            <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full hero-gradient flex items-center justify-center">
-              <span className="text-white font-display font-bold text-lg lg:text-xl">X</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-display font-semibold text-lg lg:text-xl text-primary-dark group-hover:text-primary transition-colors">
-                Xanadu Art
-              </span>
-              <span className="block text-xs text-text-muted">Art NGO</span>
-            </div>
+            <Image
+              src="/images/logo.png"
+              alt="Xanadu Art"
+              width={200}
+              height={72}
+              className="h-14 w-auto lg:h-16 object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}

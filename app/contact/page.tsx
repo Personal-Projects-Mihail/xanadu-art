@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Mail, MapPin, Phone, Facebook, Instagram, Youtube, Send } from 'lucide-react'
+import { Mail, MapPin, Phone, Facebook, Send } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Контакт | Ксанаду Арт - Охрид, Македонија',
@@ -18,27 +18,25 @@ const contactInfo = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'info@xanaduart.mk',
-    href: 'mailto:info@xanaduart.mk',
+    value: 'xanadu_ohrid@yahoo.com',
+    href: 'mailto:xanadu_ohrid@yahoo.com',
   },
   {
     icon: Phone,
     label: 'Телефон',
-    value: '+389 70 123 456',
-    href: 'tel:+38970123456',
+    value: '+389 75 308 447',
+    href: 'tel:+38975308447',
   },
   {
     icon: MapPin,
     label: 'Адреса',
-    value: 'ул. Кирил и Методиј бр. 1, 6000 Охрид, Македонија',
-    href: 'https://maps.google.com/?q=Ohrid,Macedonia',
+    value: 'ул. „Петар Чаулев" 52, 6000 Охрид, Македонија',
+    href: 'https://maps.app.goo.gl/YLPtZ9A3Rt7uvv5A9',
   },
 ]
 
 const socialLinks = [
-  { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/xanaduart' },
-  { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/xanaduart' },
-  { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/xanaduart' },
+  { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/xanaduartngo' },
 ]
 
 export default function ContactPage() {
@@ -51,7 +49,7 @@ export default function ContactPage() {
           <div className="max-w-3xl">
             <span className="inline-block text-accent font-medium mb-4">Контакт</span>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-              Контактирајте не
+              Контактирајте нè
             </h1>
             <p className="text-xl text-white/80 leading-relaxed">
               Отворени сме за соработка, партнерства и нови проекти. 
@@ -70,7 +68,7 @@ export default function ContactPage() {
               <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-6">
                 Испратете ни порака
               </h2>
-              <form className="space-y-6" action="mailto:info@xanaduart.mk" method="post" encType="text/plain">
+              <form className="space-y-6" action="mailto:xanadu_ohrid@yahoo.com" method="post" encType="text/plain">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-text-primary mb-2">
@@ -110,7 +108,7 @@ export default function ContactPage() {
                     name="subject"
                     required
                     className="w-full px-4 py-3 rounded-lg border border-highlight/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors outline-none"
-                    placeholder="Зошто не контактирате?"
+                    placeholder="Зошто нè контактирате?"
                   />
                 </div>
                 
@@ -167,7 +165,7 @@ export default function ContactPage() {
               {/* Social Links */}
               <div>
                 <h3 className="font-display font-semibold text-lg text-primary-dark mb-4">
-                  Следете не
+                  Следете нè
                 </h3>
                 <div className="flex gap-3">
                   {socialLinks.map((social) => (
@@ -215,7 +213,7 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="font-display text-2xl lg:text-3xl font-bold text-primary-dark mb-4">
-              Каде не наоѓате
+              Каде може да нè најдете
             </h2>
             <p className="text-text-secondary">
               Нашата канцеларија се наоѓа во срцето на Охрид, лесно достапна од сите делови на градот.
@@ -224,7 +222,7 @@ export default function ContactPage() {
           
           <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[16/9] lg:aspect-[21/9]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24023.2860423427!2d20.7947!3d41.1171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350db0f9e1f8c6f%3A0x5d5d5d5d5d5d5d5d!2sOhrid%2C%20North%20Macedonia!5e0!3m2!1sen!2s!4v1609459200000!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d150.11!2d20.801!3d41.117!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s%D0%9F%D0%B5%D1%82%D0%B0%D1%80%20%D0%A7%D0%B0%D1%83%D0%BB%D0%B5%D0%B2%2052%2C%20%D0%9E%D1%85%D1%80%D0%B8%D0%B4!5e0!3m2!1sen!2s!4v1706544000000!5m2!1sen!2s"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -250,7 +248,7 @@ export default function ContactPage() {
                 Дојдете на настан
               </h2>
               <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
-                Следете не на социјалните мрежи за да дознаете за нашите следни 
+                Следете нè на социјалните мрежи за да дознаете за нашите следни 
                 проекти, работилници и културни настани.
               </p>
               <div className="flex flex-wrap justify-center gap-4">

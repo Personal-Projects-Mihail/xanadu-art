@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   creator: 'Xanadu Art NGO',
   publisher: 'Xanadu Art NGO',
   robots: 'index, follow',
+  icons: { icon: '/favicon.ico' },
   alternates: {
     canonical: 'https://xanaduart.mk/en/',
     languages: {
